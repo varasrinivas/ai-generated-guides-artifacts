@@ -1,0 +1,6 @@
+# Only a human launches the full migration. Codex may never
+# auto-select this skill because a description happened to match.
+# NOTE: the key MUST sit under `policy:` — a top-level
+# allow_implicit_invocation is parsed cleanly and then ignored.
+policy:
+  allow_implicit_invocation: false

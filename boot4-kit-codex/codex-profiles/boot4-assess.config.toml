@@ -1,0 +1,6 @@
+# Copy to ~/.codex/boot4-assess.config.toml, then: codex --profile boot4-assess
+# Phase 0 assessment and the Phase 7 skeptic review: analysis, no edits.
+# Top-level keys — profile files are NOT nested under [profiles.<name>].
+model                  = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+sandbox_mode           = "read-only"

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./mvnw -q -o compile 2>&1 | tail -20 || exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}

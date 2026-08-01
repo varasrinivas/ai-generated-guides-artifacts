@@ -1,0 +1,6 @@
+{
+  "name": "boot4-kit",
+  "description": "Spring Boot 3.5 -> 4.x migration kit: phased playbook skills (/migrate-phase, /migrate-boot4), migration subagents (test-migrator, behavior-auditor), and a post-edit compile-gate hook.",
+  "author": { "name": "Platform Team" },
+  "keywords": ["spring-boot", "migration", "boot4"]
+}

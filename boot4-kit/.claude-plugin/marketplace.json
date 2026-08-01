@@ -1,0 +1,12 @@
+{
+  "name": "acme-plugins",
+  "owner": { "name": "Platform Team" },
+  "description": "Internal Claude Code plugin marketplace.",
+  "plugins": [
+    {
+      "name": "boot4-kit",
+      "source": "./",
+      "description": "Spring Boot 3.5 -> 4.x migration kit: skills, subagents, and hooks encoding the phased playbook."
+    }
+  ]
+}

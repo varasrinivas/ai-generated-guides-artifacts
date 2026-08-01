@@ -1,0 +1,13 @@
+# Project-scoped Codex configuration for a Boot 3.5 -> 4.x migration.
+# Codex loads .codex/config.toml only for TRUSTED projects, and a
+# documented set of keys is ignored at project scope — `profile` and
+# `profiles` among them. The per-phase profiles therefore ship as
+# separate files in ../codex-profiles/, for ~/.codex/.
+#
+# The Auto preset in words: edit freely inside the workspace, ask
+# before anything that escapes it.
+approval_policy = "on-request"
+sandbox_mode    = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false        # true only while resolving new dependencies
