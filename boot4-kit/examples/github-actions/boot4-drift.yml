@@ -1,0 +1,39 @@
+# examples/github-actions/boot4-drift.yml
+# Runs in a SERVICE repo, after its migration has landed. Weekly re-audit for
+# the Tier-3 changes that compile, start, and still behave differently.
+# It reports; it never fixes.
+name: Boot 4 drift check
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # The kit arrives from its marketplace — nothing is vendored into this
+      # repo, so the audit always runs the newest gotchas.md the fleet has.
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          plugin_marketplaces: "https://git.acme.internal/platform/boot4-kit.git"
+          plugins: "boot4-kit@acme-plugins"
+          prompt: |
+            Using the boot4-migration skill's references/gotchas.md and
+            references/boot4-notes.md, audit this repository for Tier-3
+            regressions only: Jackson serialization defaults, Security 7
+            authorization behavior, PropertyMapper null handling, and Batch
+            metadata persistence.
+            Report findings as a markdown list. Do NOT edit any file.
+            If you find nothing, say exactly: NO DRIFT FOUND.
+          claude_args: |
+            --max-turns 15
+            --allowedTools Read,Grep,Glob

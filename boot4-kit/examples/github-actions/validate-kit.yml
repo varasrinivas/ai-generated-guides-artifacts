@@ -1,0 +1,38 @@
+# examples/github-actions/validate-kit.yml
+# Runs in the KIT repo. Catches a broken manifest before the fleet installs it.
+# No model call, no API key — this is plain validation.
+name: Validate kit
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      # --strict turns "unrecognized field" warnings into errors. A field left
+      # over from another tool's manifest, or one character off, still loads at
+      # runtime — which is exactly why it survives review and reaches the fleet.
+      - name: Validate the plugin manifest
+        run: claude plugin validate . --strict
+
+      - name: Every skill has a description
+        run: |
+          fail=0
+          for f in skills/*/SKILL.md; do
+            grep -q '^description:' "$f" || { echo "::error file=$f::no description in frontmatter"; fail=1; }
+          done
+          exit $fail

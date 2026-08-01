@@ -33,6 +33,10 @@ boot4-kit-codex/
 │   └── agents/
 │       ├── test-migrator.toml      # test migration; never weakens assertions
 │       └── behavior-auditor.toml   # read-only Tier-3 audit (sandbox_mode = "read-only")
+├── examples/github-actions/        # copy into a repo's .github/workflows/
+│   ├── validate-kit.yml            #   kit repo: parse + policy-nesting assertions
+│   ├── boot4-drift.yml             #   service repo: weekly Tier-3 re-audit
+│   └── pr-review.yml               #   service repo: Phase 7 skeptic review
 ├── codex-profiles/                 # templates for ~/.codex/ — NOT repo config
 │   ├── boot4-assess.config.toml    # codex --profile boot4-assess
 │   ├── boot4-loop.config.toml      # codex --profile boot4-loop
@@ -143,6 +147,23 @@ instead, trading the explicit sync PR for automatic updates. Add a `.codex-plugi
 with `name`, `version`, `description`, plus `skills: "./.agents/skills/"` and
 `hooks: "./.codex/hooks.json"`. One caveat: a plugin manifest does not bundle
 `.codex/agents/` subagents, so those still travel as files either way.
+
+## CI
+
+`examples/github-actions/` holds three workflow templates. They live under `examples/`
+rather than `.github/workflows/` on purpose — dropped in the latter they would run in this
+repo, against this repo, which is not what any of them is for. Copy the one you want into
+the target repo's `.github/workflows/`.
+
+| File | Runs in | Does |
+|---|---|---|
+| `validate-kit.yml` | the kit repo | Parses every manifest and asserts each skill has a description. No API key, no model call |
+| `boot4-drift.yml` | a service repo | Weekly read-only re-audit for Tier-3 regressions after the migration landed |
+| `pr-review.yml` | a service repo | Phase 7's skeptic review on the migration PR; comments, never merges |
+
+Two rules carried in all three: the API key is a step input and never a job-level `env:`,
+and fork PRs are skipped because they carry untrusted prose as well as untrusted code.
+Sheet 10 of the guide explains both.
 
 ## What stays per-repo (on purpose)
 

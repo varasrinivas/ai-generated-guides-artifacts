@@ -31,6 +31,10 @@ boot4-kit/
 │   ├── test-migrator.md            # test migration; never weakens assertions
 │   └── behavior-auditor.md         # read-only Tier-3 audit (no Edit tool)
 ├── hooks/hooks.json                # compile after every edit; feedback within seconds
+├── examples/github-actions/        # copy into a repo's .github/workflows/
+│   ├── validate-kit.yml            #   kit repo: claude plugin validate --strict
+│   ├── boot4-drift.yml             #   service repo: weekly Tier-3 re-audit
+│   └── pr-review.yml               #   service repo: Phase 7 skeptic review
 └── tools/sync-kit.sh               # no-plugin path: vendor the kit into a repo
 ```
 
@@ -133,6 +137,23 @@ later phase, because every phase checks that the previous gate commit exists.
 `plugin.json` deliberately omits `version`: every commit to this repo is a new plugin
 version, which suits weekly iteration. For staged rollouts, add an explicit `version`
 field instead — and remember to bump it on every release, or consumers will never update.
+
+## CI
+
+`examples/github-actions/` holds three workflow templates. They live under `examples/`
+rather than `.github/workflows/` on purpose — dropped in the latter they would run in this
+repo, against this repo, which is not what any of them is for. Copy the one you want into
+the target repo's `.github/workflows/`.
+
+| File | Runs in | Does |
+|---|---|---|
+| `validate-kit.yml` | the kit repo | Parses every manifest and asserts each skill has a description. No API key, no model call |
+| `boot4-drift.yml` | a service repo | Weekly read-only re-audit for Tier-3 regressions after the migration landed |
+| `pr-review.yml` | a service repo | Phase 7's skeptic review on the migration PR; comments, never merges |
+
+Two rules carried in all three: the API key is a step input and never a job-level `env:`,
+and fork PRs are skipped because they carry untrusted prose as well as untrusted code.
+Sheet 10 of the guide explains both.
 
 ## What stays per-repo (on purpose)
 

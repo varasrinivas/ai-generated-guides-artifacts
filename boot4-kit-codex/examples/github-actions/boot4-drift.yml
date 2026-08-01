@@ -1,0 +1,39 @@
+# examples/github-actions/boot4-drift.yml
+# Runs in a SERVICE repo, after its migration has landed. Weekly re-audit for
+# the Tier-3 changes that compile, start, and still behave differently.
+# read-only sandbox: it reports, and structurally cannot fix.
+name: Boot 4 drift check
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      findings: ${{ steps.audit.outputs.final-message }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Audit for Tier-3 drift
+        id: audit
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          sandbox: read-only
+          effort: high
+          prompt: |
+            Using .agents/skills/boot4-migration/references/gotchas.md and
+            references/boot4-notes.md, audit this repository for Tier-3
+            regressions only: Jackson serialization defaults, Security 7
+            authorization behavior, PropertyMapper null handling, and Batch
+            metadata persistence.
+            Report findings as a markdown list.
+            If you find nothing, say exactly: NO DRIFT FOUND.

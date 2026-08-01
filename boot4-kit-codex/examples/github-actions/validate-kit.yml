@@ -1,0 +1,48 @@
+# examples/github-actions/validate-kit.yml
+# Runs in the KIT repo. Catches a broken artifact before the fleet syncs it.
+# No model call, no API key — this is plain parsing.
+name: Validate kit
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Config, agents, hooks and skill policies parse
+        run: |
+          python - <<'PY'
+          import json, glob, sys, tomllib
+          bad = 0
+          for f in glob.glob(".codex/**/*.toml", recursive=True) + glob.glob("codex-profiles/*.toml"):
+              try: tomllib.load(open(f, "rb"))
+              except Exception as e: print(f"::error file={f}::{e}"); bad = 1
+          for f in glob.glob(".codex/**/*.json", recursive=True):
+              try: json.load(open(f, encoding="utf-8"))
+              except Exception as e: print(f"::error file={f}::{e}"); bad = 1
+          sys.exit(bad)
+          PY
+
+      # allow_implicit_invocation must sit under `policy:`. At the top level it
+      # parses cleanly, reports nothing, and leaves the orchestrator fully
+      # auto-invocable — a safety control that fails open and stays silent.
+      - name: Invocation policy is nested correctly
+        run: |
+          f=.agents/skills/migrate-boot4/agents/openai.yaml
+          grep -q '^policy:' "$f" || { echo "::error file=$f::missing top-level policy:"; exit 1; }
+          grep -q '^  allow_implicit_invocation:' "$f" || { echo "::error file=$f::key must be nested under policy:"; exit 1; }
+
+      - name: Every skill has a description
+        run: |
+          fail=0
+          for f in .agents/skills/*/SKILL.md; do
+            grep -q '^description:' "$f" || { echo "::error file=$f::no description in frontmatter"; fail=1; }
+          done
+          exit $fail
