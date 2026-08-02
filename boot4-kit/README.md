@@ -17,6 +17,9 @@ boot4-kit/
 │   ├── plugin.json                 # plugin manifest (name, description)
 │   └── marketplace.json            # this repo as marketplace "acme-plugins"
 ├── skills/
+│   ├── audit-tier3/                # standalone: the Tier-3 behavioural audit
+│   │   ├── SKILL.md                #   worked end to end in Sheet 7.4 of the guide
+│   │   └── references/tier3-checklist.md
 │   ├── migrate-phase/SKILL.md      # /migrate-phase <n> — one phase, gated
 │   ├── migrate-boot4/SKILL.md      # /migrate-boot4 — full orchestrator, human-launch only
 │   └── boot4-migration/            # the playbook: phases, ground truth, gotchas
@@ -74,6 +77,17 @@ merge `hooks/hooks.json` into each repo's `.claude/settings.json` `"hooks"` bloc
 and vendored commands have no namespace — `/migrate-phase`, not `/boot4-kit:migrate-phase`.
 Vendored files are read-only by convention in service repos: fixes land here and return
 via the next sync PR.
+
+## audit-tier3 — usable on its own
+
+`audit-tier3/` is deliberately standalone: nothing in the playbook invokes it, and it needs
+no migration in flight. Point it at any service already on Boot 4 and it reports Tier-3
+behaviour changes — the ones that compile, start, and are still wrong.
+
+It is also the guide's worked example. Sheet 7.4 traces the Phase 6 prompt line by line into
+these two files, which is the clearest answer to "how does a prompt become a skill": the
+prompt's substance became the checklist, and the SKILL.md is mostly the things you never
+wrote down because you were in the room.
 
 ## Running it
 

@@ -15,6 +15,9 @@ into its own internal git repo (e.g. `https://git.acme.internal/platform/boot4-k
 boot4-kit-codex/
 ├── AGENTS.md                       # example repo charter — copied per repo, then edited
 ├── .agents/skills/
+│   ├── audit-tier3/                # standalone: the Tier-3 behavioural audit
+│   │   ├── SKILL.md                #   worked end to end in Sheet 7.4 of the guide
+│   │   └── references/tier3-checklist.md
 │   ├── migrate-phase/SKILL.md      # $migrate-phase — one phase, gated
 │   ├── migrate-boot4/
 │   │   ├── SKILL.md                # $migrate-boot4 — full orchestrator
@@ -68,6 +71,17 @@ copy `codex-profiles/*.config.toml` into `~/.codex/` once per engineer, then sel
 `codex --profile boot4-loop`. Profiles are separate files with top-level keys; the old
 `[profiles.<name>]` tables and the `profile = "..."` selector were removed in Codex 0.134.0
 and a leftover `profile` key is now a hard config-load error.
+
+## audit-tier3 — usable on its own
+
+`audit-tier3/` is deliberately standalone: nothing in the playbook invokes it, and it needs
+no migration in flight. Point it at any service already on Boot 4 and it reports Tier-3
+behaviour changes — the ones that compile, start, and are still wrong.
+
+It is also the guide's worked example. Sheet 7.4 traces the Phase 6 prompt line by line into
+these two files, which is the clearest answer to "how does a prompt become a skill": the
+prompt's substance became the checklist, and the SKILL.md is mostly the things you never
+wrote down because you were in the room.
 
 ## Running it
 
