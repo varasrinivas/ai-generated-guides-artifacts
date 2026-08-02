@@ -4,7 +4,7 @@
 is the reason the playbook exists; it is never skipped.
 
 **How to run:** Two independent probes — golden fixtures (mechanical) and the read-only
-behavior-auditor subagent (semantic, "think harder", strongest model tier).
+behavior-auditor subagent (semantic, maximum reasoning effort, strongest model tier).
 
 **Steps:**
 1. Goldens: run scripts/capture-goldens.sh on the PRE-bump branch (fixtures should

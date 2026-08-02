@@ -2,7 +2,7 @@
 
 **Goal:** Convert "unknown risk" into a scored, reviewable scope before a single line changes.
 
-**How to run:** Plan Mode, extended thinking ("think hard"), strongest model tier. No edits
+**How to run:** Plan Mode, `ultrathink`, strongest model tier. No edits
 in this phase — its only output is a document.
 
 **Steps:**
