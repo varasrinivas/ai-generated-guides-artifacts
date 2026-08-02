@@ -7,7 +7,7 @@
 - Modules: api, service, persistence, batch
 
 ## Migration Context
-We are migrating from Spring Boot 3.5.x to 4.x.
+We are migrating from Spring Boot 3.5.x to 4.1.x.
 Authoritative reference: the official Spring Boot 4.0
 Migration Guide (spring-projects/spring-boot wiki)
 
