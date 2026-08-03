@@ -23,11 +23,25 @@ jobs:
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
 
-      # --strict turns "unrecognized field" warnings into errors. A field left
-      # over from another tool's manifest, or one character off, still loads at
-      # runtime — which is exactly why it survives review and reaches the fleet.
+      # A field left over from another tool's manifest, or one character off,
+      # still loads at runtime — which is exactly why it survives review and
+      # reaches the fleet. --strict promotes those warnings to errors, but it
+      # promotes ALL of them, and this kit deliberately carries one: `version`
+      # is omitted so every commit is a new version (Sheet 10.3). Bare --strict
+      # would fail this job on a perfectly good manifest, every run, and a
+      # permanently red gate is one nobody reads. So validate normally — which
+      # still fails outright on a broken manifest — then require that the only
+      # warning left standing is that one.
       - name: Validate the plugin manifest
-        run: claude plugin validate . --strict
+        run: |
+          out=$(claude plugin validate .)
+          echo "$out"
+          total=$(printf '%s' "$out" | grep -oE 'Found [0-9]+ warning' | grep -oE '[0-9]+' | head -1)
+          known=$(printf '%s' "$out" | grep -c 'No version specified' || true)
+          if [ "${total:-0}" -gt "${known:-0}" ]; then
+            echo "::error::manifest has warnings beyond the deliberate missing version"
+            exit 1
+          fi
 
       - name: Every skill has a description
         run: |
