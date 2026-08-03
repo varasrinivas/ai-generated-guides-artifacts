@@ -21,7 +21,10 @@ jobs:
           python - <<'PY'
           import json, glob, sys, tomllib
           bad = 0
-          for f in glob.glob(".codex/**/*.toml", recursive=True) + glob.glob("codex-profiles/*.toml"):
+          toml = (glob.glob(".codex/**/*.toml", recursive=True)
+                  + glob.glob("codex-profiles/*.toml")
+                  + glob.glob("examples/*.toml"))
+          for f in toml:
               try: tomllib.load(open(f, "rb"))
               except Exception as e: print(f"::error file={f}::{e}"); bad = 1
           for f in glob.glob(".codex/**/*.json", recursive=True):

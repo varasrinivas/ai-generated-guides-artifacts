@@ -13,8 +13,10 @@
 #   .codex/agents/      -> <repo>/.codex/agents     (kit-owned, replaced)
 #   .codex/hooks.json   -> <repo>/.codex/hooks.json (Codex reads this file
 #                          directly, so there is no merge step)
-#   .codex/config.toml  -> NOT copied: it is per-repo and carries the sandbox
-#                          and approval policy. Warned about once.
+#   examples/config.toml-> NOT copied: .codex/config.toml is per-repo and
+#                          carries the sandbox and approval policy. It sits
+#                          under examples/ so it does not configure THIS
+#                          repo. Warned about once.
 #   codex-profiles/*    -> ~/.codex/ by hand: profiles are user-level and
 #                          cannot be vendored into a repo.
 set -euo pipefail
@@ -39,7 +41,7 @@ cp    "$KIT/.codex/hooks.json" "$REPO/.codex/hooks.json"
 
 if [ ! -f "$REPO/.codex/config.toml" ]; then
   echo ">>> $REPO/.codex/config.toml is missing."
-  echo ">>> One-time step: copy $KIT/.codex/config.toml into $REPO/.codex/."
+  echo ">>> One-time step: copy $KIT/examples/config.toml into $REPO/.codex/."
 fi
 if [ ! -f "$HOME/.codex/boot4-loop.config.toml" ]; then
   echo ">>> Profiles are user-level and cannot be vendored into a repo."

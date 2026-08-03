@@ -31,15 +31,16 @@ boot4-kit-codex/
 │       │   └── gotchas.md          # symptom → cause → fix, grows per migration
 │       └── scripts/capture-goldens.sh
 ├── .codex/
-│   ├── config.toml                 # approval + sandbox floor for the repo
 │   ├── hooks.json                  # compile after every edit; exit 2 + stderr feeds back
 │   └── agents/
 │       ├── test-migrator.toml      # test migration; never weakens assertions
 │       └── behavior-auditor.toml   # read-only Tier-3 audit (sandbox_mode = "read-only")
-├── examples/github-actions/        # copy into a repo's .github/workflows/
-│   ├── validate-kit.yml            #   kit repo: parse + policy-nesting assertions
-│   ├── boot4-drift.yml             #   service repo: weekly Tier-3 re-audit
-│   └── pr-review.yml               #   service repo: Phase 7 skeptic review
+├── examples/                       # templates to copy, inert where they sit
+│   ├── config.toml                 #   a repo's .codex/config.toml: approval + sandbox floor
+│   └── github-actions/             #   copy into a repo's .github/workflows/
+│       ├── validate-kit.yml        #     kit repo: parse + policy-nesting assertions
+│       ├── boot4-drift.yml         #     service repo: weekly Tier-3 re-audit
+│       └── pr-review.yml           #     service repo: Phase 7 skeptic review
 ├── codex-profiles/                 # templates for ~/.codex/ — NOT repo config
 │   ├── boot4-assess.config.toml    # codex --profile boot4-assess
 │   ├── boot4-loop.config.toml      # codex --profile boot4-loop
@@ -47,12 +48,15 @@ boot4-kit-codex/
 └── tools/sync-kit.sh               # vendor the kit into a service repo
 ```
 
-Three directories, three jobs: `.agents/skills/` holds the portable Agent Skills (the same
-folder layout other agents read); `.codex/` holds the Codex-specific repo configuration —
-subagents, hooks, and the sandbox/approval floor; and `codex-profiles/` holds per-phase
-profile templates that belong in `~/.codex/`, because `profile`/`profiles` keys are ignored
-inside a project `config.toml`. Note too that Codex reads the `.codex/` layer only for
-**trusted** projects.
+Four directories, four jobs. `.agents/skills/` holds the portable Agent Skills (the same
+folder layout other agents read). `.codex/` holds what the kit *owns* and the sync script
+copies: the subagents and the compile-gate hook. `codex-profiles/` holds per-phase profile
+templates that belong in `~/.codex/`, because `profile`/`profiles` keys are ignored inside a
+project `config.toml`. And `examples/` holds templates you copy somewhere else — the
+sandbox/approval floor and the CI workflows — which is why they sit there rather than at
+`.codex/config.toml` and `.github/workflows/`: at their live paths they would configure and
+run against *this* repo, which is not what either is for. Note too that Codex reads the
+`.codex/` layer only for **trusted** projects.
 
 ## Consuming it in a service repo
 
@@ -97,8 +101,8 @@ cp codex-profiles/*.config.toml ~/.codex/
 **Once per repo**
 
 1. `./tools/sync-kit.sh ../order-service`, then push the branch and merge the PR.
-2. Copy `.codex/config.toml` in by hand the first time — the script never overwrites it,
-   because it carries per-repo sandbox and approval policy.
+2. `cp examples/config.toml ../order-service/.codex/config.toml` the first time — the
+   script never overwrites it, because it carries per-repo sandbox and approval policy.
 3. Open the repo with `codex` and **trust it** when prompted. Codex reads the `.codex/`
    layer only for trusted projects; untrusted, your hooks and config are silently absent.
 4. Run `/hooks` and trust the compile gate. New and changed hooks are skipped until
