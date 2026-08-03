@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw *)",
+      "Bash(git status)", "Bash(git diff*)", "Bash(git log*)",
+      "Bash(git add *)", "Bash(git commit *)"
+    ],
+    "deny": [
+      "Bash(git push*)", "Bash(rm *)",
+      "Read(src/main/resources/application-prod.yml)",
+      "Edit(src/main/resources/application-prod.yml)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./mvnw -q -o compile >/tmp/boot4-compile.log 2>&1 || { tail -20 /tmp/boot4-compile.log >&2; exit 2; }",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

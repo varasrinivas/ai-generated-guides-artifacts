@@ -34,10 +34,13 @@ boot4-kit/
 │   ├── test-migrator.md            # test migration; never weakens assertions
 │   └── behavior-auditor.md         # read-only Tier-3 audit (no Edit tool)
 ├── hooks/hooks.json                # compile after every edit; feedback within seconds
-├── examples/github-actions/        # copy into a repo's .github/workflows/
-│   ├── validate-kit.yml            #   kit repo: claude plugin validate --strict
-│   ├── boot4-drift.yml             #   service repo: weekly Tier-3 re-audit
-│   └── pr-review.yml               #   service repo: Phase 7 skeptic review
+├── examples/                       # templates to copy, never live config here
+│   ├── settings.json               #   a repo's .claude/settings.json: permissions + hook
+│   ├── settings-plugin-stub.json   #   the stub a repo commits to install this plugin
+│   └── github-actions/             #   copy into a repo's .github/workflows/
+│       ├── validate-kit.yml        #     kit repo: claude plugin validate --strict
+│       ├── boot4-drift.yml         #     service repo: weekly Tier-3 re-audit
+│       └── pr-review.yml           #     service repo: Phase 7 skeptic review
 └── tools/sync-kit.sh               # no-plugin path: vendor the kit into a repo
 ```
 
@@ -46,19 +49,19 @@ plugin root.
 
 ## Consuming it in a service repo
 
-Commit this stub as `.claude/settings.json` — the entire per-repo footprint:
+Copy the stub in as `.claude/settings.json` — the entire per-repo footprint — and point
+the marketplace URL at your own git host:
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "acme-plugins": {
-      "source": { "source": "url",
-                  "url": "https://git.acme.internal/platform/boot4-kit.git" }
-    }
-  },
-  "enabledPlugins": { "boot4-kit@acme-plugins": true }
-}
+```bash
+mkdir -p <service-repo>/.claude
+cp examples/settings-plugin-stub.json <service-repo>/.claude/settings.json
 ```
+
+`examples/settings.json` is the other half: the permissions and compile-gate hook a repo
+runs the migration under. It is a *starting point* rather than a drop-in, since `deny`
+names this example's production config path. Merge it into the same `settings.json` if
+you are consuming the plugin, or use it whole if you are not. Both files are reproduced
+verbatim on Sheets 4.2 and 9.4 of the guide, and a check fails if they drift apart.
 
 Anyone opening the repo gets the kit after a single workspace-trust prompt, namespaced:
 `/boot4-kit:migrate-phase 3`, `/boot4-kit:migrate-boot4`, plus the subagents and the

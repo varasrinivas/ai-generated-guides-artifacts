@@ -1,0 +1,9 @@
+{
+  "extraKnownMarketplaces": {
+    "acme-plugins": {
+      "source": { "source": "url",
+                  "url": "https://git.acme.internal/platform/boot4-kit.git" }
+    }
+  },
+  "enabledPlugins": { "boot4-kit@acme-plugins": true }
+}
