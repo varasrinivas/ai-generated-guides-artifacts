@@ -7,6 +7,9 @@
 **Steps:**
 1. Update Maven compiler/toolchain configuration (or Gradle equivalents) to Java 21;
    update CI images/toolchain files if present in-repo.
+   If the team uses Maven toolchains (Sheet 4.2 of the guide), the branch-side change is
+   the maven-toolchains-plugin declaration and the java.version property - the
+   machine-wide ~/.m2/toolchains.xml already lists both JDKs and is not this phase's to edit.
 2. Fix anything the stricter compiler surfaces.
 3. Do NOT adopt new language features (records, pattern matching, etc.) — keep migration
    diffs boring and reviewable; modernize later, after the migration lands.

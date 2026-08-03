@@ -61,7 +61,7 @@ cp examples/settings-plugin-stub.json <service-repo>/.claude/settings.json
 runs the migration under. It is a *starting point* rather than a drop-in, since `deny`
 names this example's production config path. Merge it into the same `settings.json` if
 you are consuming the plugin, or use it whole if you are not. Both files are reproduced
-verbatim on Sheets 4.2 and 7.4 of the guide, and a check fails if they drift apart.
+verbatim on Sheets 4.3 and 7.4 of the guide, and a check fails if they drift apart.
 
 Anyone opening the repo gets the kit after a single workspace-trust prompt, namespaced:
 `/boot4-kit:migrate-phase 3`, `/boot4-kit:migrate-boot4`, plus the subagents and the
@@ -96,16 +96,24 @@ wrote down because you were in the room.
 
 Installing the kit is not the same as running it. From a cold start in a service repo:
 
+**Once per machine**
+
+Install both JDKs — the one the 3.5.x build uses today, and 21 for the target. Sheet 4.2
+of the guide has the per-OS commands and the Maven/Gradle toolchain setup.
+
 **Once per repo**
 
-1. Commit the `.claude/settings.json` stub above (or vendor with `tools/sync-kit.sh`).
-2. Open the repo with `claude` and accept the workspace-trust prompt.
-3. Confirm the kit is visible: `/plugin` should show `boot4-kit` enabled, and the commands
+1. Create the baseline worktree — `git worktree add ../<svc>-boot3-baseline main`, pinned
+   to the pre-bump branch. Phase 6's golden capture hard-fails if a running 3.5.x app is
+   not there to capture from (Sheet 4.2 of the guide).
+2. Commit the `.claude/settings.json` stub above (or vendor with `tools/sync-kit.sh`).
+3. Open the repo with `claude` and accept the workspace-trust prompt.
+4. Confirm the kit is visible: `/plugin` should show `boot4-kit` enabled, and the commands
    appear namespaced as `/boot4-kit:migrate-phase` and `/boot4-kit:migrate-boot4`
    (unnamespaced — `/migrate-phase` — if you vendored instead).
-4. Merge `hooks/hooks.json` into the repo's `.claude/settings.json` `"hooks"` block if you
+5. Merge `hooks/hooks.json` into the repo's `.claude/settings.json` `"hooks"` block if you
    vendored; the plugin path installs it for you.
-5. Write `CLAUDE.md` for the repo. Copy the template from Sheet 04 of the guide and fill in
+6. Write `CLAUDE.md` for the repo. Copy the template from Sheet 04 of the guide and fill in
    the real module names, build command, and rules.
 
 **Then, per phase**

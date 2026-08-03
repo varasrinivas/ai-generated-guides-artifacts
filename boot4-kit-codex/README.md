@@ -93,6 +93,9 @@ Installing the kit is not the same as running it. From a cold start in a service
 
 **Once per machine**
 
+Install both JDKs first — the one the 3.5.x build uses today, and 21 for the target
+(Sheet 4.2 of the guide has the per-OS commands and toolchain setup). Then:
+
 ```
 npm install -g @openai/codex          # or: brew install --cask codex
 cp codex-profiles/*.config.toml ~/.codex/
@@ -100,16 +103,19 @@ cp codex-profiles/*.config.toml ~/.codex/
 
 **Once per repo**
 
-1. `./tools/sync-kit.sh ../order-service`, then push the branch and merge the PR.
-2. `cp examples/config.toml ../order-service/.codex/config.toml` the first time — the
+1. Create the baseline worktree — `git worktree add ../<svc>-boot3-baseline main`, pinned
+   to the pre-bump branch. Phase 6's golden capture hard-fails if a running 3.5.x app is
+   not there to capture from (Sheet 4.2 of the guide).
+2. `./tools/sync-kit.sh ../order-service`, then push the branch and merge the PR.
+3. `cp examples/config.toml ../order-service/.codex/config.toml` the first time — the
    script never overwrites it, because it carries per-repo sandbox and approval policy.
-3. Open the repo with `codex` and **trust it** when prompted. Codex reads the `.codex/`
+4. Open the repo with `codex` and **trust it** when prompted. Codex reads the `.codex/`
    layer only for trusted projects; untrusted, your hooks and config are silently absent.
-4. Run `/hooks` and trust the compile gate. New and changed hooks are skipped until
+5. Run `/hooks` and trust the compile gate. New and changed hooks are skipped until
    reviewed, so this is not optional — an untrusted hook is a hook that never fires.
-5. Confirm the kit is visible: `/skills` should list `migrate-phase`, `migrate-boot4`, and
+6. Confirm the kit is visible: `/skills` should list `migrate-phase`, `migrate-boot4`, and
    `boot4-migration`; `/agent` should list `test-migrator` and `behavior-auditor`.
-6. Write `AGENTS.md` for the repo. Copy the one here as a starting point and fill in the
+7. Write `AGENTS.md` for the repo. Copy the one here as a starting point and fill in the
    real module names, build command, and rules — it ships as a template, not a shared file.
 
 **Then, per phase**
