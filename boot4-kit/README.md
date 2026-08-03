@@ -4,7 +4,7 @@ Claude Code plugin encoding our Spring Boot 3.5 → 4.x migration playbook: phas
 skill-commands, migration subagents, and a post-edit compile-gate hook. This repo doubles
 as its own plugin **marketplace**, so consuming it needs no copying — just a settings stub.
 
-This is the reference implementation of Sheet 08 of the companion guide,
+This is the reference implementation of Sheet 07 of the companion guide,
 [`code-migration-using-claude/spring-boot-3-to-4-migration-guide.html`](https://github.com/varasrinivas/ai-generated-guides/blob/main/code-migration-using-claude/spring-boot-3-to-4-migration-guide.html)
 in the [guides repo](https://github.com/varasrinivas/ai-generated-guides). To use it for real, extract this directory
 into its own internal git repo (e.g. `https://git.acme.internal/platform/boot4-kit.git`).
@@ -18,7 +18,7 @@ boot4-kit/
 │   └── marketplace.json            # this repo as marketplace "acme-plugins"
 ├── skills/
 │   ├── audit-tier3/                # standalone: the Tier-3 behavioural audit
-│   │   ├── SKILL.md                #   worked end to end in Sheet 7.4 of the guide
+│   │   ├── SKILL.md                #   worked end to end in Sheet 8.4 of the guide
 │   │   └── references/tier3-checklist.md
 │   ├── migrate-phase/SKILL.md      # /migrate-phase <n> — one phase, gated
 │   ├── migrate-boot4/SKILL.md      # /migrate-boot4 — full orchestrator, human-launch only
@@ -61,7 +61,7 @@ cp examples/settings-plugin-stub.json <service-repo>/.claude/settings.json
 runs the migration under. It is a *starting point* rather than a drop-in, since `deny`
 names this example's production config path. Merge it into the same `settings.json` if
 you are consuming the plugin, or use it whole if you are not. Both files are reproduced
-verbatim on Sheets 4.2 and 9.4 of the guide, and a check fails if they drift apart.
+verbatim on Sheets 4.2 and 7.4 of the guide, and a check fails if they drift apart.
 
 Anyone opening the repo gets the kit after a single workspace-trust prompt, namespaced:
 `/boot4-kit:migrate-phase 3`, `/boot4-kit:migrate-boot4`, plus the subagents and the
@@ -87,7 +87,7 @@ via the next sync PR.
 no migration in flight. Point it at any service already on Boot 4 and it reports Tier-3
 behaviour changes — the ones that compile, start, and are still wrong.
 
-It is also the guide's worked example. Sheet 7.4 traces the Phase 6 prompt line by line into
+It is also the guide's worked example. Sheet 8.4 traces the Phase 6 prompt line by line into
 these two files, which is the clearest answer to "how does a prompt become a skill": the
 prompt's substance became the checklist, and the SKILL.md is mostly the things you never
 wrote down because you were in the room.
@@ -105,7 +105,7 @@ Installing the kit is not the same as running it. From a cold start in a service
    (unnamespaced — `/migrate-phase` — if you vendored instead).
 4. Merge `hooks/hooks.json` into the repo's `.claude/settings.json` `"hooks"` block if you
    vendored; the plugin path installs it for you.
-5. Write `CLAUDE.md` for the repo. Copy the template from Sheet 03 of the guide and fill in
+5. Write `CLAUDE.md` for the repo. Copy the template from Sheet 04 of the guide and fill in
    the real module names, build command, and rules.
 
 **Then, per phase**
@@ -140,7 +140,7 @@ means a human has to type it.
   Security 7 default change, and every golden-output diff from Phase 6. The run reports
   and waits.
 - **`references/boot4-notes.md` ships with the kit** and is what the phases check against.
-  Sheet 03 of the guide also has you generate `docs/migration/boot4-notes.md` for the
+  Sheet 04 of the guide also has you generate `docs/migration/boot4-notes.md` for the
   pilot; after the pilot, the distilled version lives here and the per-repo copy is
   redundant.
 
@@ -170,7 +170,7 @@ the target repo's `.github/workflows/`.
 
 Two rules carried in all three: the API key is a step input and never a job-level `env:`,
 and fork PRs are skipped because they carry untrusted prose as well as untrusted code.
-Sheet 10 of the guide explains both.
+Sheet 11 of the guide explains both.
 
 ## What stays per-repo (on purpose)
 

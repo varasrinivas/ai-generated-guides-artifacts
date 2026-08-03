@@ -4,7 +4,7 @@ Runnable artifacts for the guides in
 [varasrinivas/ai-generated-guides](https://github.com/varasrinivas/ai-generated-guides).
 
 The guides explain the reasoning; these are the files you actually install. Each kit is the
-reference implementation of Sheet 08 of its guide, and every code block on that sheet is
+reference implementation of Sheet 07 of its guide, and every code block on that sheet is
 reproduced from these files byte for byte.
 
 | Kit | Agent | Guide |

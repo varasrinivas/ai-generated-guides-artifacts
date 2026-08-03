@@ -4,7 +4,7 @@ OpenAI Codex kit encoding our Spring Boot 3.5 → 4.x migration playbook: phased
 migration subagents, and a post-edit compile-gate hook. It ships by **vendoring** — a sync
 script copies it into each service repo and the PR review is the adoption gate.
 
-This is the reference implementation of Sheet 08 of the companion guide,
+This is the reference implementation of Sheet 07 of the companion guide,
 [`code-migration-using-codex/spring-boot-3-to-4-migration-guide.html`](https://github.com/varasrinivas/ai-generated-guides/blob/main/code-migration-using-codex/spring-boot-3-to-4-migration-guide.html)
 in the [guides repo](https://github.com/varasrinivas/ai-generated-guides). To use it for real, extract this directory
 into its own internal git repo (e.g. `https://git.acme.internal/platform/boot4-kit.git`).
@@ -16,7 +16,7 @@ boot4-kit-codex/
 ├── AGENTS.md                       # example repo charter — copied per repo, then edited
 ├── .agents/skills/
 │   ├── audit-tier3/                # standalone: the Tier-3 behavioural audit
-│   │   ├── SKILL.md                #   worked end to end in Sheet 7.4 of the guide
+│   │   ├── SKILL.md                #   worked end to end in Sheet 8.4 of the guide
 │   │   └── references/tier3-checklist.md
 │   ├── migrate-phase/SKILL.md      # $migrate-phase — one phase, gated
 │   ├── migrate-boot4/
@@ -82,7 +82,7 @@ and a leftover `profile` key is now a hard config-load error.
 no migration in flight. Point it at any service already on Boot 4 and it reports Tier-3
 behaviour changes — the ones that compile, start, and are still wrong.
 
-It is also the guide's worked example. Sheet 7.4 traces the Phase 6 prompt line by line into
+It is also the guide's worked example. Sheet 8.4 traces the Phase 6 prompt line by line into
 these two files, which is the clearest answer to "how does a prompt become a skill": the
 prompt's substance became the checklist, and the SKILL.md is mostly the things you never
 wrote down because you were in the room.
@@ -145,7 +145,7 @@ human has to type it.
   Security 7 default change, and every golden-output diff from Phase 6. The run reports
   and waits.
 - **`references/boot4-notes.md` ships with the kit** and is what the phases check against.
-  Sheet 03 of the guide also has you generate `docs/migration/boot4-notes.md` for the
+  Sheet 04 of the guide also has you generate `docs/migration/boot4-notes.md` for the
   pilot; after the pilot, the distilled version lives here and the per-repo copy is
   redundant.
 
@@ -181,7 +181,7 @@ the target repo's `.github/workflows/`.
 
 Two rules carried in all three: the API key is a step input and never a job-level `env:`,
 and fork PRs are skipped because they carry untrusted prose as well as untrusted code.
-Sheet 10 of the guide explains both.
+Sheet 11 of the guide explains both.
 
 ## What stays per-repo (on purpose)
 
