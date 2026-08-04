@@ -22,7 +22,7 @@ boot4-kit-codex/
 │   ├── migrate-boot4/
 │   │   ├── SKILL.md                # $migrate-boot4 — full orchestrator
 │   │   └── agents/openai.yaml      #   allow_implicit_invocation: false (human-launch only)
-│   └── boot4-migration/            # the playbook: phases, ground truth, gotchas
+│   └── boot4-migration/            # the playbook: RUNBOOK, phases, ground truth, gotchas
 │       ├── SKILL.md
 │       ├── references/
 │       │   ├── phases/             # phase-0.md … phase-7.md — goal, steps, gate,
