@@ -16,12 +16,23 @@ official wiki before each new migration wave.
 
 - Starter renames: `starter-web` → `starter-webmvc`; `starter-aop` → `starter-aspectj`
   (keep it if you use Micrometer `@Timed`/`@Counted`).
+- Undertow removed (no Servlet 6.1 release): `starter-undertow` no longer resolves —
+  return to Tomcat or Jetty, then check container-default deltas (see gotchas:
+  Tomcat caps header *count* at 100 vs Undertow's 200).
+- Batch 6 relocations: `core.job.Job`, `core.step.Step`, `core.job.parameters.*`,
+  `infrastructure.repeat.RepeatStatus`.
+- `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT` (RFC 9110); the
+  api-docs reason phrase changes with it.
 - RestTemplate/RestClient need `starter-restclient`; WebClient-only apps: `starter-webclient`.
 - Removed: `WebSecurityConfigurerAdapter`, `.and()` chaining, `authorizeRequests()`,
   `Mvc/AntPathRequestMatcher` (→ `PathPatternRequestMatcher`), OkHttp3, embedded launch
   scripts, reactive Pulsar.
 - Jackson: annotations stay at `com.fasterxml.jackson.annotation`; everything else moves to
-  `tools.jackson`. Mapper customization = `JsonMapper` bean, not `ObjectMapper`.
+  `tools.jackson`. Mapper customization = `JsonMapper` bean, not `ObjectMapper`. API renames
+  ride along: `JsonSerializer` → `ValueSerializer`, `SerializerProvider` →
+  `SerializationContext`, `write*Field` → `write*Property` (exceptions now unchecked);
+  Boot side: `@JsonComponent` → `@JacksonComponent`,
+  `Jackson2ObjectMapperBuilderCustomizer` → `JsonMapperBuilderCustomizer`.
 - `HttpHeaders` no longer implements `MultiValueMap` (`asMultiValueMap()` is the deprecated
   fallback).
 - Modules relocated to `org.springframework.boot.<module>` packages; `BootstrapRegistry` and
@@ -33,7 +44,16 @@ official wiki before each new migration wave.
 - Micrometer metrics need `spring-boot-starter-micrometer-metrics`; OTLP export moved to
   `spring-boot-starter-opentelemetry`.
 - Batch 6: in-memory metadata is the default — add `spring-boot-starter-batch-jdbc` BEFORE
-  first run or job history silently stops persisting.
+  first run or job history silently stops persisting. Metadata SQL: `BATCH_JOB_SEQ` was
+  renamed `BATCH_JOB_INSTANCE_SEQ` — run the `migration/6.0` script shipped in
+  spring-batch-core per environment; `initialize-schema: always` will not do it (its
+  errors are swallowed by the `continue-on-error` default).
+- Flyway auto-configuration moved out of `spring-boot-autoconfigure` into
+  `spring-boot-flyway`: add `spring-boot-starter-flyway` — explicit `flyway-core` is not
+  enough, and databases that already carry the schema mask the gap.
+- Empty-map YAML placeholders (`key: {}`) for `Map` properties now fail startup —
+  Framework 7's binder no longer converts the flattened empty string
+  (`ConverterNotFoundException`). Delete the placeholder.
 - `@Retryable`/`@ConcurrencyLimit` moved into core Framework (`@EnableResilientMethods`);
   Boot no longer manages `spring-retry`.
 - Testcontainers 2.x required — modules re-prefixed `testcontainers-`, container classes
@@ -60,6 +80,9 @@ official wiki before each new migration wave.
 - SpEL expressions capped at 10,000 operations by default.
 - 4.1: HTTP-client SSRF mitigation via `InetAddressFilter` can block outbound calls —
   verify egress after upgrade.
+- springdoc's Boot-4 line still ships jackson-databind 2.x beside Jackson 3, so
+  `com.fasterxml` imports compile and silently bypass `JsonMapper` conventions —
+  ban them in main code.
 
 ## Tests (Phase 5/7)
 
@@ -68,4 +91,7 @@ official wiki before each new migration wave.
 - `@SpringBootTest` no longer auto-configures MockMvc → add `@AutoConfigureMockMvc`;
   TestRestTemplate needs `@AutoConfigureTestRestTemplate`; `@WithMockUser` needs
   `spring-boot-starter-security-test`.
+- Test slices modularized: `@WebMvcTest`/MockMvc → `spring-boot-webmvc-test`
+  (`org.springframework.boot.webmvc.test.autoconfigure`); `TestRestTemplate` →
+  `spring-boot-resttestclient`; MockMvc security wiring → `spring-boot-starter-security-test`.
 - JUnit 6 (Jupiter). (`junit-vintage-engine` has not been transitive since Boot 2.4.)
