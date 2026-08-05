@@ -36,6 +36,11 @@ tools/sync-kit.sh <path-to-service-repo>
   `.claude/skills/boot4-migration/references/phases/phase-0..7.md` — each phase
   below starts by reading its file. (`.claude` is a dot-directory; use
   `git ls-files .claude` if your tree view hides it.)
+- New or context-poor repo? Run `/init` and review-then-commit the generated
+  `CLAUDE.md` BEFORE Phase 0 — then add what no generator can guess: build/run
+  quirks, which contracts are externally consumed, which log lines feed
+  compliance, what the dashboards scrape. That is exactly the map Phase 0's
+  assessment needs, and every later session (and subagent) starts warmer for it.
 
 ## Phase 0 — assessment (Plan Mode, no edits)
 

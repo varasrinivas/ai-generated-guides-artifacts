@@ -35,6 +35,11 @@ tools/sync-kit.sh <path-to-service-repo>
   `.agents/skills/boot4-migration/references/phases/phase-0..7.md` — each phase
   below starts by reading its file. (`.agents` and `.codex` are dot-directories;
   use `git ls-files .agents .codex` if your tree view hides them.)
+- New or context-poor repo? Copy the kit's example `AGENTS.md` into the repo,
+  edit it, and commit BEFORE Phase 0 — add what no template can guess: build/run
+  quirks, which contracts are externally consumed, which log lines feed
+  compliance, what the dashboards scrape. That is exactly the map Phase 0's
+  assessment needs, and every later session (and subagent) starts warmer for it.
 
 ## Phase 0 — assessment (`/plan` or `sandbox_mode = "read-only"`, no edits)
 
