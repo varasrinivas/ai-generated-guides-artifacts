@@ -187,7 +187,7 @@ the target repo's `.github/workflows/`.
 
 Two rules carried in all three: the API key is a step input and never a job-level `env:`,
 and fork PRs are skipped because they carry untrusted prose as well as untrusted code.
-Sheet 11 of the guide explains both.
+Sheet 12 of the guide explains both.
 
 ## What stays per-repo (on purpose)
 

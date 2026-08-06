@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "IN=$(cat); case $IN in *.java*|*pom.xml*) ;; *) exit 0;; esac; [ -f ./mvnw ] || exit 0; ./mvnw -q -o compile >/tmp/boot4-compile.log 2>&1 || { tail -20 /tmp/boot4-compile.log >&2; exit 2; }",
+        "powershell": "$in = [Console]::In.ReadToEnd(); if ($in -notmatch '\\.java|pom\\.xml') { exit 0 }; if (!(Test-Path ./mvnw)) { exit 0 }; & ./mvnw -q -o compile > $env:TEMP/boot4-compile.log 2>&1; if ($LASTEXITCODE -ne 0) { Get-Content $env:TEMP/boot4-compile.log -Tail 20 | ForEach-Object { [Console]::Error.WriteLine($_) }; exit 2 }",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}

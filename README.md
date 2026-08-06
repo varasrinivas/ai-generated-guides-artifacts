@@ -11,12 +11,15 @@ reproduced from these files byte for byte.
 |---|---|---|
 | [`boot4-kit/`](boot4-kit/) | Claude Code | *Migrating Spring Boot 3.x → 4.0 with Claude Code* |
 | [`boot4-kit-codex/`](boot4-kit-codex/) | OpenAI Codex | *Migrating Spring Boot 3.x → 4.0 with OpenAI Codex* |
+| [`boot4-kit-copilot/`](boot4-kit-copilot/) | GitHub Copilot CLI | *Migrating Spring Boot 3.x → 4.0 with GitHub Copilot* |
 
-Both encode the same eight-phase Spring Boot 3.5 → 4.x migration playbook: phased skills,
-migration subagents, a post-edit compile-gate hook, and per-phase rule files distilled from
-a real pilot migration. What differs is only the agent harness they are written against —
-`CLAUDE.md` vs `AGENTS.md`, a permissions allowlist vs a sandbox plus approval policy,
-markdown subagents vs TOML, `/name` vs `$name` invocation.
+All three encode the same eight-phase Spring Boot 3.5 → 4.x migration playbook: phased
+skills, migration subagents, a post-edit compile-gate hook, and per-phase rule files
+distilled from a real pilot migration. What differs is only the agent harness they are
+written against — `CLAUDE.md` vs `AGENTS.md`, a permissions allowlist vs a sandbox plus
+approval policy vs per-tool approvals, markdown subagents vs TOML vs `.agent.md`,
+`/name` vs `$name` vs `/name` invocation, and where a repo's copy lives (`.claude/`,
+`.agents/` + `.codex/`, or `.github/`).
 
 ## Using one
 
@@ -25,8 +28,8 @@ setup, the command sequence, and the two behaviours that look like bugs and are 
 
 In short: extract the kit you want into its own internal git repo, then either install it
 as a plugin (Claude Code) or vendor it into each service repo with `tools/sync-kit.sh`
-(either). The kits are written to be forked and edited — the phase files in particular are
-meant to absorb what each migration teaches.
+(any of the three). The kits are written to be forked and edited — the phase files in
+particular are meant to absorb what each migration teaches.
 
 ## What stays out of these kits, deliberately
 
@@ -40,7 +43,7 @@ skills as stopping points and are not to be automated away.
 
 The guides repo carries `tools/check-guides.py`, which verifies that every code block in a
 guide still matches the file here that it names, that the Spring Boot content is identical
-across both kits, and that the kits reference migration state under `docs/migration/`. It
+across all three kits, and that the kits reference migration state under `docs/migration/`. It
 finds this repo as a sibling checkout, or wherever `GUIDES_ARTIFACTS` points:
 
 ```

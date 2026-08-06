@@ -1,0 +1,53 @@
+# examples/github-actions/validate-kit.yml
+# Runs in the KIT repo. Catches a broken artifact before the fleet syncs it.
+# No model call, no API key — this is plain parsing.
+name: Validate kit
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # NOTE: these globs enumerate directories. A file that moves out of
+      # hooks/ or agents/ drops out of validation while this job stays
+      # green — extend the glob in the same commit that moves the file.
+      - name: Hook file parses, and each hook carries both shells
+        run: |
+          python - <<'PY'
+          import json, glob, sys
+          bad = 0
+          for f in glob.glob("hooks/*.json"):
+              try:
+                  doc = json.load(open(f, encoding="utf-8"))
+              except Exception as e:
+                  print(f"::error file={f}::{e}"); bad = 1; continue
+              if doc.get("version") != 1:
+                  print(f"::error file={f}::hooks schema must declare version 1"); bad = 1
+              if "postToolUse" not in doc.get("hooks", {}):
+                  print(f"::error file={f}::compile gate missing: no postToolUse hooks"); bad = 1
+              # bash is required on Unix and powershell on Windows; a hook
+              # missing either runs on one OS and silently never fires on
+              # the other — a gate that fails open for half the fleet.
+              for event, entries in doc.get("hooks", {}).items():
+                  for i, h in enumerate(entries):
+                      for shell in ("bash", "powershell"):
+                          if not h.get(shell):
+                              print(f"::error file={f}::{event}[{i}] has no {shell} command"); bad = 1
+          sys.exit(bad)
+          PY
+
+      - name: Every skill and agent has a description
+        run: |
+          fail=0
+          for f in skills/*/SKILL.md agents/*.agent.md; do
+            grep -q '^description:' "$f" || { echo "::error file=$f::no description in frontmatter"; fail=1; }
+          done
+          exit $fail
